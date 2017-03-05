@@ -32,10 +32,11 @@ class Dotenv
      *
      * @return void
      */
-    public function __construct($path, $file = '.env')
+    public function __construct($path, $file = '.env', LoaderInterface $loader = null)
     {
         $this->filePath = $this->getFilePath($path, $file);
-        $this->loader = new Loader($this->filePath, true);
+
+        $this->loader = $loader;
     }
 
     /**
@@ -86,7 +87,16 @@ class Dotenv
      */
     protected function loadData($overload = false)
     {
-        return $this->loader->setImmutable(!$overload)->load();
+        return $this->getLoader()->setImmutable(!$overload)->load();
+    }
+
+    protected function getLoader()
+    {
+        if (null === $this->loader) {
+            $this->loader = new Loader($this->filePath, true);
+        }
+
+        return $this->loader;
     }
 
     /**
@@ -98,6 +108,6 @@ class Dotenv
      */
     public function required($variable)
     {
-        return new Validator((array) $variable, $this->loader);
+        return new Validator((array) $variable, $this->getLoader());
     }
 }

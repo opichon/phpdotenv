@@ -34,7 +34,7 @@ class Validator
      *
      * @return void
      */
-    public function __construct(array $variables, Loader $loader)
+    public function __construct(array $variables, LoaderInterface $loader)
     {
         $this->variables = $variables;
         $this->loader = $loader;
